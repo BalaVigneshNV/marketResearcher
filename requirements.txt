@@ -6,3 +6,10 @@ openai==1.58.1
 pandas==2.2.3
 openpyxl==3.1.5
 python-dotenv==1.0.1
+langgraph==0.2.55
+langchain==0.3.14
+langchain-openai==0.2.14
+trafilatura==1.12.2
+playwright==1.49.1
+faiss-cpu==1.9.0
+qdrant-client==1.12.1
