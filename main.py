@@ -130,26 +130,51 @@ def fetch_clients() -> list[dict]:
 # ---------------------------------------------------------------------------
 
 def fetch_news_for_client(client_name: str, max_results: int = MAX_ARTICLES_PER_CLIENT) -> list[dict]:
-    """Use DuckDuckGo to find recent news articles about *client_name*."""
+    """
+    Use DuckDuckGo to find recent news articles about *client_name*.
+    Performs multiple targeted searches to capture comprehensive market research data:
+    - General news
+    - Product launches and innovations
+    - Market trends and competitive intelligence
+    """
     articles = []
-    try:
-        with DDGS() as ddgs:
-            results = ddgs.news(
-                keywords=f"{client_name} news",
-                max_results=max_results,
-                safesearch="moderate",
-            )
-            for item in results:
-                articles.append(
-                    {
-                        "url": item.get("url", ""),
-                        "title": item.get("title", ""),
-                        "snippet": item.get("body", ""),
-                    }
+    seen_urls = set()
+
+    # Define multiple search queries for comprehensive coverage
+    search_queries = [
+        f"{client_name} news",
+        f"{client_name} product launch innovation",
+        f"{client_name} market trends competition",
+        f"{client_name} leadership hiring expansion",
+    ]
+
+    # Distribute max_results across queries
+    results_per_query = max(1, max_results // len(search_queries))
+
+    for query in search_queries:
+        try:
+            with DDGS() as ddgs:
+                results = ddgs.news(
+                    keywords=query,
+                    max_results=results_per_query,
+                    safesearch="moderate",
                 )
-        log.info(f"  [{client_name}] Found {len(articles)} articles.")
-    except Exception as exc:
-        log.warning(f"  [{client_name}] DuckDuckGo search error: {exc}")
+                for item in results:
+                    url = item.get("url", "")
+                    # Avoid duplicate articles from different searches
+                    if url and url not in seen_urls:
+                        seen_urls.add(url)
+                        articles.append(
+                            {
+                                "url": url,
+                                "title": item.get("title", ""),
+                                "snippet": item.get("body", ""),
+                            }
+                        )
+        except Exception as exc:
+            log.warning(f"  [{client_name}] DuckDuckGo search error for query '{query}': {exc}")
+
+    log.info(f"  [{client_name}] Found {len(articles)} unique articles across {len(search_queries)} searches.")
     return articles
 
 
@@ -188,28 +213,30 @@ def classify_article(
     """
     Ask Azure OpenAI to:
       1. Write a brief market-research summary of the article.
-      2. Classify it as P1, P2, or P3 based on the provided rules.
+      2. Classify it as P1, P2, P3, P4, or P5 based on the provided rules.
 
     Returns a dict with keys 'market_summary' and 'signal_type'.
     """
     prompt = f"""
-You are a professional market research analyst. Given the news article below about the company "{client_name}", perform two tasks:
+You are a professional market research analyst specializing in lead conversion intelligence. Given the news article below about the company "{client_name}", perform two tasks:
 
-1. Write a concise **Market Summary** (2-3 sentences) explaining the business relevance of this news.
-2. Classify the signal as exactly one of: P1, P2, or P3, using the criteria below.
+1. Write a concise **Market Summary** (2-3 sentences) explaining the business relevance of this news and how it could be used as a conversation starter for client conversion.
+2. Classify the signal as exactly one of: P1, P2, P3, P4, or P5, using the criteria below.
 
 Classification Criteria:
 - P1: {rules.get('P1_Criteria', '')}
 - P2: {rules.get('P2_Criteria', '')}
 - P3: {rules.get('P3_Criteria', '')}
+- P4: {rules.get('P4_Criteria', '')}
+- P5: {rules.get('P5_Criteria', '')}
 
 Article Title: {title}
 Article Snippet: {snippet}
 
 Respond in this exact JSON format (no extra text):
 {{
-  "market_summary": "<your summary here>",
-  "signal_type": "<P1|P2|P3>"
+  "market_summary": "<your summary here, focusing on lead conversion opportunities>",
+  "signal_type": "<P1|P2|P3|P4|P5>"
 }}
 """.strip()
 
@@ -218,7 +245,7 @@ Respond in this exact JSON format (no extra text):
             model=AZURE_DEPLOYMENT,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2,
-            max_tokens=300,
+            max_tokens=400,
         )
         raw = response.choices[0].message.content.strip()
         # Strip markdown code fences if present
@@ -229,14 +256,14 @@ Respond in this exact JSON format (no extra text):
         result = json.loads(raw)
         return {
             "market_summary": result.get("market_summary", ""),
-            "signal_type": result.get("signal_type", "P3"),
+            "signal_type": result.get("signal_type", "P5"),
         }
     except json.JSONDecodeError as exc:
-        log.warning(f"JSON parse error from OpenAI response: {exc}. Defaulting to P3.")
-        return {"market_summary": snippet[:200], "signal_type": "P3"}
+        log.warning(f"JSON parse error from OpenAI response: {exc}. Defaulting to P5.")
+        return {"market_summary": snippet[:200], "signal_type": "P5"}
     except Exception as exc:
         log.error(f"OpenAI API error: {exc}")
-        return {"market_summary": snippet[:200], "signal_type": "P3"}
+        return {"market_summary": snippet[:200], "signal_type": "P5"}
 
 
 # ---------------------------------------------------------------------------
@@ -292,7 +319,14 @@ def export_to_excel() -> int:
             JOIN clients  c ON c.id = a.client_id
             WHERE a.notified = 0
             ORDER BY
-                CASE a.signal_type WHEN 'P1' THEN 1 WHEN 'P2' THEN 2 ELSE 3 END,
+                CASE a.signal_type
+                    WHEN 'P1' THEN 1
+                    WHEN 'P2' THEN 2
+                    WHEN 'P3' THEN 3
+                    WHEN 'P4' THEN 4
+                    WHEN 'P5' THEN 5
+                    ELSE 6
+                END,
                 c.owner_name,
                 c.name
             """

@@ -255,6 +255,167 @@ DEMO_ARTICLES = [
         ),
         "url": "https://example.com/nvidia-sustainability",
     },
+    # --- P4 signals (market intelligence and growth opportunities) ---
+    {
+        "client_name": "Apple Inc.",
+        "title": "Apple Launches Vision Pro 2 with Enhanced AI Features and Spatial Computing",
+        "snippet": (
+            "Apple unveiled the second-generation Vision Pro headset, featuring improved AI-driven "
+            "gesture recognition, extended battery life, and deeper integration with Apple's ecosystem. "
+            "The company is positioning it as the future of spatial computing."
+        ),
+        "signal_type": "P4",
+        "market_summary": (
+            "Apple's Vision Pro 2 launch signals strategic commitment to spatial computing and AR/VR markets. "
+            "This represents a major product innovation that could open new revenue streams. "
+            "Great conversation starter about digital transformation and future technology adoption."
+        ),
+        "url": "https://example.com/apple-vision-pro-2",
+    },
+    {
+        "client_name": "Microsoft Corporation",
+        "title": "Microsoft Appoints New Chief Revenue Officer to Drive Enterprise Cloud Growth",
+        "snippet": (
+            "Microsoft has appointed industry veteran Sarah Chen as Chief Revenue Officer, tasking her "
+            "with accelerating Azure and enterprise cloud adoption across Fortune 500 customers."
+        ),
+        "signal_type": "P4",
+        "market_summary": (
+            "A new CRO appointment indicates Microsoft's strategic focus on enterprise revenue acceleration. "
+            "This hiring signals potential changes in go-to-market strategy and could create new partnership "
+            "opportunities. Excellent hook for discussing their cloud transformation journey."
+        ),
+        "url": "https://example.com/microsoft-cro",
+    },
+    {
+        "client_name": "Salesforce Inc.",
+        "title": "Salesforce Expands into Healthcare Vertical with New Industry Cloud",
+        "snippet": (
+            "Salesforce announced the launch of Health Cloud 2.0, a purpose-built CRM platform for "
+            "healthcare providers, payers, and pharmaceutical companies, marking significant expansion "
+            "into the $4 trillion healthcare sector."
+        ),
+        "signal_type": "P4",
+        "market_summary": (
+            "Salesforce's healthcare vertical expansion represents a major growth opportunity in a "
+            "high-value market segment. This strategic move into new verticals indicates strong growth "
+            "ambitions and provides excellent context for discussing their industry-specific solutions."
+        ),
+        "url": "https://example.com/salesforce-health-cloud",
+    },
+    {
+        "client_name": "Amazon.com Inc.",
+        "title": "Amazon Files 200+ AI and Robotics Patents in Q4 2024",
+        "snippet": (
+            "Amazon's patent filings reveal significant R&D investment in AI-driven warehouse automation, "
+            "autonomous delivery systems, and generative AI for customer service applications."
+        ),
+        "signal_type": "P4",
+        "market_summary": (
+            "Amazon's aggressive patent filing activity signals major innovation initiatives in AI and "
+            "automation. These R&D investments indicate strategic technology direction and could reshape "
+            "logistics and e-commerce operations. Perfect discussion point for their innovation roadmap."
+        ),
+        "url": "https://example.com/amazon-patents",
+    },
+    {
+        "client_name": "Alphabet Inc.",
+        "title": "Google Reports 45% Increase in Enterprise AI Adoption Across Fortune 1000",
+        "snippet": (
+            "Google Cloud published its annual State of AI report, showing 45% year-over-year growth "
+            "in enterprise AI adoption. Key growth areas include generative AI, predictive analytics, "
+            "and AI-powered security solutions."
+        ),
+        "signal_type": "P4",
+        "market_summary": (
+            "Google's strong AI adoption metrics demonstrate market leadership and validate their AI strategy. "
+            "This data provides compelling evidence of enterprise AI momentum and creates natural conversation "
+            "opportunities about digital transformation and AI readiness."
+        ),
+        "url": "https://example.com/google-ai-adoption",
+    },
+    # --- P5 signals (competitive and ecosystem insights) ---
+    {
+        "client_name": "Tesla Inc.",
+        "title": "Automotive Industry Analysts Upgrade Tesla to 'Strong Buy' Citing EV Market Leadership",
+        "snippet": (
+            "Major investment banks including Goldman Sachs and Morgan Stanley upgraded Tesla to 'Strong Buy' "
+            "ratings, citing dominant market share in EVs, battery technology advantages, and autonomous "
+            "driving progress."
+        ),
+        "signal_type": "P5",
+        "market_summary": (
+            "Positive analyst coverage reinforces Tesla's competitive positioning in the EV ecosystem. "
+            "These ratings provide third-party validation of market leadership and create opportunities to "
+            "discuss industry trends, competitive advantages, and market dynamics with prospects."
+        ),
+        "url": "https://example.com/tesla-analyst-upgrade",
+    },
+    {
+        "client_name": "Meta Platforms Inc.",
+        "title": "Meta's Llama 3 AI Model Goes Viral with 50M Downloads in First Month",
+        "snippet": (
+            "Meta's open-source Llama 3 language model has been downloaded over 50 million times, "
+            "generating significant social media buzz and positioning Meta as a leader in democratized AI. "
+            "Developer communities are creating thousands of applications based on the platform."
+        ),
+        "signal_type": "P5",
+        "market_summary": (
+            "Viral adoption of Llama 3 demonstrates Meta's thought leadership in open-source AI. "
+            "Strong developer ecosystem engagement and social media buzz indicate positive sentiment shifts. "
+            "Excellent conversation starter about AI strategy and open-source vs. proprietary approaches."
+        ),
+        "url": "https://example.com/meta-llama-viral",
+    },
+    {
+        "client_name": "NVIDIA Corporation",
+        "title": "Supply Chain Report: NVIDIA Secures 80% of Global Advanced GPU Manufacturing Capacity",
+        "snippet": (
+            "Industry analysis reveals NVIDIA has secured long-term agreements with TSMC and Samsung "
+            "covering 80% of advanced node manufacturing capacity for AI accelerators through 2027, "
+            "significantly ahead of competitors AMD and Intel."
+        ),
+        "signal_type": "P5",
+        "market_summary": (
+            "NVIDIA's supply chain dominance provides crucial competitive intelligence about their market "
+            "position and production capabilities. This ecosystem insight helps frame discussions about "
+            "AI infrastructure investments and highlights their strategic advantages over competitors."
+        ),
+        "url": "https://example.com/nvidia-supply-chain",
+    },
+    {
+        "client_name": "OpenAI",
+        "title": "Industry Report: ChatGPT Maintains 60% Market Share in Enterprise Generative AI",
+        "snippet": (
+            "A Gartner report shows ChatGPT/OpenAI maintains dominant 60% market share in enterprise "
+            "generative AI deployments, far ahead of competitors. Customer sentiment analysis shows "
+            "high satisfaction scores and strong retention rates."
+        ),
+        "signal_type": "P5",
+        "market_summary": (
+            "OpenAI's market dominance and positive customer sentiment provide powerful competitive "
+            "intelligence for sales conversations. These metrics validate their technology leadership "
+            "and create natural discussion points about AI adoption strategies and vendor selection."
+        ),
+        "url": "https://example.com/openai-market-share",
+    },
+    {
+        "client_name": "Palantir Technologies",
+        "title": "Palantir Joins AI Ethics Consortium, Publishes Thought Leadership on Responsible AI",
+        "snippet": (
+            "Palantir announced membership in the Global AI Ethics Consortium and published a "
+            "comprehensive whitepaper on responsible AI governance in defense and intelligence applications. "
+            "The content has gained traction in policy circles and industry associations."
+        ),
+        "signal_type": "P5",
+        "market_summary": (
+            "Palantir's thought leadership in AI ethics demonstrates industry influence and helps "
+            "differentiate their brand in sensitive markets. Participation in industry associations "
+            "and policy discussions provides excellent context for conversations about responsible AI "
+            "implementation and regulatory compliance."
+        ),
+        "url": "https://example.com/palantir-ai-ethics",
+    },
 ]
 
 

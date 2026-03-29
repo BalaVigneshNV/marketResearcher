@@ -162,7 +162,7 @@ python demo.py          # inserts sample data and exports Excel
 python demo.py --reset  # clears existing articles first, then inserts fresh demo data
 ```
 
-The demo includes 14 pre-classified articles (4 × P1, 5 × P2, 5 × P3) across 10 dummy clients and 10 owners.
+The demo includes 24 pre-classified articles (4 × P1, 5 × P2, 5 × P3, 5 × P4, 5 × P5) across 10 dummy clients and 10 owners.
 
 ## Dynamic Classification Rules
 
@@ -172,9 +172,13 @@ Edit `classification_rules.json` to change how articles are classified — no co
 {
   "P1_Criteria": "Critical signals like CEO changes, major stock drops, or bankruptcies.",
   "P2_Criteria": "Significant business events like IPOs, funding rounds, strategic partnerships.",
-  "P3_Criteria": "Routine news, minor product updates, or general industry noise."
+  "P3_Criteria": "Routine news, minor product updates, or general industry noise.",
+  "P4_Criteria": "Market intelligence and growth opportunities: new product launches, technology innovations, R&D initiatives, hiring trends, digital transformation initiatives.",
+  "P5_Criteria": "Competitive and ecosystem insights: competitor analysis, supply chain developments, technology adoption trends, analyst ratings, social media buzz, thought leadership content."
 }
 ```
+
+The system now supports five priority levels (P1-P5) to capture comprehensive market research data that helps with lead conversion:
 
 ## Running the CRM API standalone
 
