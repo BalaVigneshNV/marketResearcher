@@ -36,26 +36,15 @@ log = logging.getLogger(__name__)
 EXCEL_OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "owner_notifications.xlsx")
 
 # ---------------------------------------------------------------------------
-# Sample demo data
+# Sample demo articles
+# Articles reference clients by *name* so they work regardless of the auto-
+# assigned database ID. IDs are resolved at insertion time.
 # ---------------------------------------------------------------------------
-
-DEMO_CLIENTS = [
-    (1, "Tesla Inc.", "Alice Johnson"),
-    (2, "Apple Inc.", "Bob Smith"),
-    (3, "Microsoft Corporation", "Carol Williams"),
-    (4, "Amazon.com Inc.", "David Brown"),
-    (5, "Alphabet Inc.", "Eve Davis"),
-    (6, "Meta Platforms Inc.", "Frank Miller"),
-    (7, "NVIDIA Corporation", "Grace Wilson"),
-    (8, "Salesforce Inc.", "Henry Moore"),
-    (9, "Palantir Technologies", "Ivy Taylor"),
-    (10, "OpenAI", "Jack Anderson"),
-]
 
 DEMO_ARTICLES = [
     # --- P1 signals (critical) ---
     {
-        "client_id": 1,
+        "client_name": "Tesla Inc.",
         "title": "Tesla CEO Elon Musk Steps Down as CEO, Appoints New Leadership",
         "snippet": (
             "In a stunning move, Tesla's board announced that Elon Musk will transition from the "
@@ -70,7 +59,7 @@ DEMO_ARTICLES = [
         "url": "https://example.com/tesla-ceo-change",
     },
     {
-        "client_id": 4,
+        "client_name": "Amazon.com Inc.",
         "title": "Amazon Faces $2B Antitrust Fine from EU Regulators",
         "snippet": (
             "European regulators have slapped Amazon with a record $2 billion antitrust fine, "
@@ -85,7 +74,7 @@ DEMO_ARTICLES = [
         "url": "https://example.com/amazon-antitrust-fine",
     },
     {
-        "client_id": 6,
+        "client_name": "Meta Platforms Inc.",
         "title": "Meta Stock Drops 15% Following Data Breach Disclosure",
         "snippet": (
             "Meta Platforms disclosed a major data breach affecting over 400 million user records. "
@@ -100,7 +89,7 @@ DEMO_ARTICLES = [
         "url": "https://example.com/meta-data-breach",
     },
     {
-        "client_id": 9,
+        "client_name": "Palantir Technologies",
         "title": "Palantir Faces Congressional Scrutiny Over Government Contract Practices",
         "snippet": (
             "A Senate committee has launched an investigation into Palantir's government contracting "
@@ -116,7 +105,7 @@ DEMO_ARTICLES = [
     },
     # --- P2 signals (significant) ---
     {
-        "client_id": 2,
+        "client_name": "Apple Inc.",
         "title": "Apple Announces $3 Billion Acquisition of AI Startup Luminary AI",
         "snippet": (
             "Apple has agreed to acquire Luminary AI, a generative AI startup, for $3 billion "
@@ -131,7 +120,7 @@ DEMO_ARTICLES = [
         "url": "https://example.com/apple-ai-acquisition",
     },
     {
-        "client_id": 3,
+        "client_name": "Microsoft Corporation",
         "title": "Microsoft Closes $10B Strategic Partnership with SAP for Cloud Services",
         "snippet": (
             "Microsoft and SAP have announced a landmark $10 billion, five-year cloud partnership "
@@ -146,7 +135,7 @@ DEMO_ARTICLES = [
         "url": "https://example.com/microsoft-sap-partnership",
     },
     {
-        "client_id": 7,
+        "client_name": "NVIDIA Corporation",
         "title": "NVIDIA Raises $5B in Secondary Offering to Fund AI Infrastructure Expansion",
         "snippet": (
             "NVIDIA has completed a $5 billion secondary stock offering to fund accelerated "
@@ -161,7 +150,7 @@ DEMO_ARTICLES = [
         "url": "https://example.com/nvidia-offering",
     },
     {
-        "client_id": 10,
+        "client_name": "OpenAI",
         "title": "OpenAI Secures Series F Funding of $6.6 Billion at $157 Billion Valuation",
         "snippet": (
             "OpenAI has closed its Series F funding round raising $6.6 billion, valuing the "
@@ -176,7 +165,7 @@ DEMO_ARTICLES = [
         "url": "https://example.com/openai-series-f",
     },
     {
-        "client_id": 5,
+        "client_name": "Alphabet Inc.",
         "title": "Alphabet Expands Google Cloud to 10 New Regions in Asia-Pacific",
         "snippet": (
             "Alphabet announced the expansion of Google Cloud infrastructure to 10 new regions "
@@ -192,7 +181,7 @@ DEMO_ARTICLES = [
     },
     # --- P3 signals (routine) ---
     {
-        "client_id": 2,
+        "client_name": "Apple Inc.",
         "title": "Apple Wins 'Best Smartphone Camera' Award at CES 2025",
         "snippet": (
             "Apple's iPhone 16 Pro won the Best Smartphone Camera award at CES 2025, "
@@ -207,7 +196,7 @@ DEMO_ARTICLES = [
         "url": "https://example.com/apple-ces-award",
     },
     {
-        "client_id": 3,
+        "client_name": "Microsoft Corporation",
         "title": "Microsoft Releases Patch Tuesday Security Updates for January 2025",
         "snippet": (
             "Microsoft released its monthly Patch Tuesday updates, addressing 72 vulnerabilities "
@@ -222,7 +211,7 @@ DEMO_ARTICLES = [
         "url": "https://example.com/microsoft-patch-tuesday",
     },
     {
-        "client_id": 8,
+        "client_name": "Salesforce Inc.",
         "title": "Salesforce Launches Minor Update to Einstein Analytics Dashboard",
         "snippet": (
             "Salesforce released a minor update to its Einstein Analytics product, adding "
@@ -237,7 +226,7 @@ DEMO_ARTICLES = [
         "url": "https://example.com/salesforce-einstein-update",
     },
     {
-        "client_id": 1,
+        "client_name": "Tesla Inc.",
         "title": "Tesla Opens New Service Centre in Austin, Texas",
         "snippet": (
             "Tesla has opened a new service and delivery centre in Austin, Texas, "
@@ -252,7 +241,7 @@ DEMO_ARTICLES = [
         "url": "https://example.com/tesla-austin-service",
     },
     {
-        "client_id": 7,
+        "client_name": "NVIDIA Corporation",
         "title": "NVIDIA Publishes Annual Sustainability Report Highlighting Carbon Reduction Goals",
         "snippet": (
             "NVIDIA released its 2024 Corporate Sustainability Report, outlining goals to "
@@ -281,20 +270,45 @@ def reset_demo_data(conn: sqlite3.Connection) -> None:
 
 
 def insert_demo_data(conn: sqlite3.Connection) -> None:
-    """Insert sample clients (idempotent) and demo articles."""
-    conn.executemany(
-        "INSERT OR IGNORE INTO clients (id, name, owner_name) VALUES (?, ?, ?)",
-        DEMO_CLIENTS,
-    )
-    conn.executemany(
-        """
-        INSERT INTO articles (client_id, url, title, snippet, signal_type, market_summary, notified)
-        VALUES (:client_id, :url, :title, :snippet, :signal_type, :market_summary, 0)
-        """,
-        DEMO_ARTICLES,
-    )
+    """Insert demo articles using client names resolved to DB IDs."""
+    # Build name→id lookup from whatever clients are currently in the DB
+    rows = conn.execute("SELECT id, name FROM clients").fetchall()
+    name_to_id = {row["name"]: row["id"] for row in rows}
+
+    inserted = 0
+    skipped = 0
+    for article in DEMO_ARTICLES:
+        client_name = article["client_name"]
+        client_id = name_to_id.get(client_name)
+        if client_id is None:
+            log.warning(
+                f"  Skipping article '{article['title'][:50]}…' — "
+                f"client '{client_name}' not found in DB. "
+                f"Add it to clients.csv and re-run database.py first."
+            )
+            skipped += 1
+            continue
+        conn.execute(
+            """
+            INSERT INTO articles (client_id, url, title, snippet, signal_type, market_summary, notified)
+            VALUES (?, ?, ?, ?, ?, ?, 0)
+            """,
+            (
+                client_id,
+                article["url"],
+                article["title"],
+                article["snippet"],
+                article["signal_type"],
+                article["market_summary"],
+            ),
+        )
+        inserted += 1
+
     conn.commit()
-    log.info(f"Inserted {len(DEMO_ARTICLES)} demo articles for {len(DEMO_CLIENTS)} clients.")
+    log.info(
+        f"Inserted {inserted} demo articles "
+        + (f"({skipped} skipped — client not in DB)." if skipped else "for all clients.")
+    )
 
 
 def export_demo_excel(conn: sqlite3.Connection) -> None:
@@ -399,3 +413,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
