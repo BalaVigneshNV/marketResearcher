@@ -1,11 +1,13 @@
 # Environment secrets
 .env
 
-# Generated database
+# Generated databases
 signals.db
+market_research.db
 
-# Generated Excel output
+# Generated reports
 owner_notifications.xlsx
+report_*.md
 
 # Python cache
 __pycache__/
