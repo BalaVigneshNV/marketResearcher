@@ -1,0 +1,27 @@
+# clients.csv — Client and Owner seed list
+#
+# This file defines which clients (companies) are monitored and who owns each
+# client relationship. Edit this file freely to add, remove, or update entries.
+#
+# Format: name,owner_name
+# Rules:
+#   • Lines starting with # are comments and are ignored.
+#   • The first non-comment line must be the header: name,owner_name
+#   • Both columns are required for every row.
+#   • Leading/trailing whitespace around values is stripped automatically.
+#
+# After editing, re-run  python database.py  or  python manage_clients.py  to
+# apply changes, or simply restart main.py / client_api.py — the CSV is read
+# on every startup.
+#
+name,owner_name
+Tesla Inc.,Alice Johnson
+Apple Inc.,Bob Smith
+Microsoft Corporation,Carol Williams
+Amazon.com Inc.,David Brown
+Alphabet Inc.,Eve Davis
+Meta Platforms Inc.,Frank Miller
+NVIDIA Corporation,Grace Wilson
+Salesforce Inc.,Henry Moore
+Palantir Technologies,Ivy Taylor
+OpenAI,Jack Anderson
