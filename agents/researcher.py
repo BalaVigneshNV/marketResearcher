@@ -63,6 +63,38 @@ def search_web(query: str, max_results: int = MAX_RESULTS_PER_QUERY) -> List[Dic
     return results
 
 
+def search_news(query: str, max_results: int = MAX_RESULTS_PER_QUERY) -> List[Dict[str, str]]:
+    """
+    Search for news articles using DuckDuckGo News.
+
+    Args:
+        query: Search query string
+        max_results: Maximum number of results to return
+
+    Returns:
+        List of dicts with 'url', 'title', 'snippet'
+    """
+    results = []
+    try:
+        with DDGS() as ddgs:
+            news_results = ddgs.news(
+                keywords=query,
+                max_results=max_results,
+                safesearch="moderate",
+            )
+            for item in news_results:
+                results.append({
+                    "url": item.get("url", ""),
+                    "title": item.get("title", ""),
+                    "snippet": item.get("body", ""),
+                })
+        log.info(f"[Researcher] Found {len(results)} news articles for: {query}")
+    except Exception as e:
+        log.warning(f"[Researcher] News search error for '{query}': {e}")
+
+    return results
+
+
 def fetch_with_requests(url: str) -> Optional[str]:
     """
     Fetch page content using requests library.
@@ -200,7 +232,7 @@ def research_topic(
     source_preferences: Optional[Dict[str, Any]] = None,
 ) -> List[Dict[str, Any]]:
     """
-    Execute the research stage: search, fetch, extract.
+    Execute the research stage: search news and web, fetch, extract.
 
     Args:
         session_id: Database session ID
@@ -216,11 +248,17 @@ def research_topic(
     for query in search_queries:
         log.info(f"[Researcher] Searching: {query}")
 
-        # Search the web
-        search_results = search_web(query)
+        # Search news first (primary source for market research)
+        news_results = search_news(query)
+
+        # Also search the web for additional context
+        web_results = search_web(query)
+
+        # Combine results, prioritizing news
+        all_results = news_results + web_results
 
         # Fetch and extract each result
-        for result in search_results:
+        for result in all_results:
             url = result["url"]
 
             # Skip duplicates
@@ -235,6 +273,9 @@ def research_topic(
                 log.warning(f"[Researcher] Failed to extract content from: {url}")
                 continue
 
+            # Determine source type based on which search returned it
+            source_type = "news" if result in news_results else "search"
+
             # Store in database
             try:
                 evidence_id = database_v2.add_raw_evidence(
@@ -243,7 +284,7 @@ def research_topic(
                     title=extracted["title"],
                     content=extracted["content"],
                     snippet=extracted["snippet"],
-                    source_type="search",
+                    source_type=source_type,
                     fetch_method=extracted["fetch_method"],
                     metadata=json.dumps({"search_query": query}),
                 )
@@ -255,9 +296,10 @@ def research_topic(
                     "content": extracted["content"],
                     "snippet": extracted["snippet"],
                     "fetch_method": extracted["fetch_method"],
+                    "source_type": source_type,
                 })
 
-                log.info(f"[Researcher] Stored evidence: {extracted['title'][:60]}...")
+                log.info(f"[Researcher] Stored {source_type} evidence: {extracted['title'][:60]}...")
 
             except Exception as e:
                 log.error(f"[Researcher] Database error: {e}")
