@@ -11,18 +11,30 @@ Takes a topic and produces:
 import os
 import json
 from typing import Dict, List, Any
-from openai import OpenAI
+from openai import AzureOpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-def get_openai_client() -> OpenAI:
-    """Get OpenAI client instance."""
-    api_key = os.getenv("OPENAI_API_KEY")
+def get_openai_client() -> AzureOpenAI:
+    """Get Azure OpenAI client instance."""
+    api_key = os.getenv("AZURE_OPENAI_API_KEY")
+    endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+    api_version = os.getenv("AZURE_OPENAI_API_VERSION")
+
     if not api_key:
-        raise EnvironmentError("OPENAI_API_KEY must be set in .env")
-    return OpenAI(api_key=api_key)
+        raise EnvironmentError("AZURE_OPENAI_API_KEY must be set in .env")
+    if not endpoint:
+        raise EnvironmentError("AZURE_OPENAI_ENDPOINT must be set in .env")
+    if not api_version:
+        raise EnvironmentError("AZURE_OPENAI_API_VERSION must be set in .env")
+
+    return AzureOpenAI(
+        api_key=api_key,
+        azure_endpoint=endpoint,
+        api_version=api_version,
+    )
 
 
 def plan_research(client_name: str, topic: str) -> Dict[str, Any]:
@@ -95,7 +107,7 @@ Respond ONLY with valid JSON in this exact format:
 
     try:
         response = client.chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            model=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4o"),
             messages=[
                 {
                     "role": "system",

@@ -40,7 +40,12 @@ load_dotenv()
 
 def validate_environment():
     """Check that required environment variables are set."""
-    required_vars = ["OPENAI_API_KEY"]
+    required_vars = [
+        "AZURE_OPENAI_API_KEY",
+        "AZURE_OPENAI_ENDPOINT",
+        "AZURE_OPENAI_API_VERSION",
+        "AZURE_OPENAI_DEPLOYMENT_NAME",
+    ]
     missing = [var for var in required_vars if not os.getenv(var)]
 
     if missing:

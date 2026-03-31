@@ -68,14 +68,16 @@ playwright install chromium
 
 ```bash
 cp .env.example .env
-# Edit .env with your OpenAI API key
+# Edit .env with your Azure OpenAI credentials
 ```
 
 Required variables in `.env`:
 
 ```
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-4o-mini
+AZURE_OPENAI_API_KEY=your_azure_openai_api_key_here
+AZURE_OPENAI_ENDPOINT=https://your-resource-name.cognitiveservices.azure.com/
+AZURE_OPENAI_API_VERSION=2024-12-01-preview
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
 ```
 
 ### 3. Run market research
@@ -350,9 +352,9 @@ Run:
 playwright install chromium
 ```
 
-### "OPENAI_API_KEY not set"
+### "AZURE_OPENAI_API_KEY not set"
 
-Make sure you've copied `.env.example` to `.env` and added your API key.
+Make sure you've copied `.env.example` to `.env` and added your Azure OpenAI credentials including API key, endpoint, API version, and deployment name.
 
 ### Search returns no results
 
