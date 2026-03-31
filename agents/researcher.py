@@ -1,9 +1,10 @@
 """
 researcher.py - Researcher agent for market research workflow.
 
-Executes web searches, fetches pages, and extracts content.
+Executes news and web searches, fetches pages, and extracts content.
 Uses:
-- DuckDuckGo or SearXNG for search
+- DuckDuckGo News API for news articles (primary source)
+- DuckDuckGo Text API for general web search (supplementary)
 - requests for simple page fetching
 - Playwright for JavaScript-heavy pages (when needed)
 - Trafilatura for content extraction
