@@ -8,7 +8,7 @@ import os
 import json
 import logging
 from typing import List, Dict, Any
-from openai import OpenAI
+from openai import AzureOpenAI
 from dotenv import load_dotenv
 
 import database_v2
@@ -18,12 +18,24 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-def get_openai_client() -> OpenAI:
-    """Get OpenAI client instance."""
-    api_key = os.getenv("OPENAI_API_KEY")
+def get_openai_client() -> AzureOpenAI:
+    """Get Azure OpenAI client instance."""
+    api_key = os.getenv("AZURE_OPENAI_API_KEY")
+    endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+    api_version = os.getenv("AZURE_OPENAI_API_VERSION")
+
     if not api_key:
-        raise EnvironmentError("OPENAI_API_KEY must be set in .env")
-    return OpenAI(api_key=api_key)
+        raise EnvironmentError("AZURE_OPENAI_API_KEY must be set in .env")
+    if not endpoint:
+        raise EnvironmentError("AZURE_OPENAI_ENDPOINT must be set in .env")
+    if not api_version:
+        raise EnvironmentError("AZURE_OPENAI_API_VERSION must be set in .env")
+
+    return AzureOpenAI(
+        api_key=api_key,
+        azure_endpoint=endpoint,
+        api_version=api_version,
+    )
 
 
 def write_report(
@@ -102,7 +114,7 @@ Generate the complete report in markdown format.
 
     try:
         response = client.chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            model=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4o"),
             messages=[
                 {
                     "role": "system",
@@ -126,7 +138,7 @@ Provide an executive-level summary suitable for quick review.
 """.strip()
 
         summary_response = client.chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            model=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4o"),
             messages=[
                 {
                     "role": "system",
