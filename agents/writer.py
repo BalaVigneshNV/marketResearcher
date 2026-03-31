@@ -123,7 +123,7 @@ Generate the complete report in markdown format.
                 {"role": "user", "content": prompt},
             ],
             temperature=0.4,
-            max_tokens=4000,
+            max_completion_tokens=4000,
         )
 
         report_content = response.choices[0].message.content.strip()
@@ -147,7 +147,7 @@ Provide an executive-level summary suitable for quick review.
                 {"role": "user", "content": summary_prompt},
             ],
             temperature=0.3,
-            max_tokens=500,
+            max_completion_tokens=500,
         )
 
         summary = summary_response.choices[0].message.content.strip()

@@ -346,7 +346,7 @@ except Exception as e:
 ### Current Limits
 
 - `MAX_RESULTS_PER_QUERY = 3`: Limits evidence per query
-- `max_tokens = 4000`: Writer output limit
+- `max_completion_tokens = 4000`: Writer output limit
 - `content[:3000]`: Analyst input truncation
 - `timeout = 10s`: Request timeout
 

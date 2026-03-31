@@ -245,7 +245,7 @@ Respond in this exact JSON format (no extra text):
             model=AZURE_DEPLOYMENT,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2,
-            max_tokens=400,
+            max_completion_tokens=400,
         )
         raw = response.choices[0].message.content.strip()
         # Strip markdown code fences if present
